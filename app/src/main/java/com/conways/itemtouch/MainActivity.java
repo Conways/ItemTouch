@@ -4,8 +4,10 @@ import android.support.annotation.MainThread;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.View;
@@ -28,7 +30,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     }
 
     private void initDate() {
-        strs = new String[10];
+        strs = new String[102];
         for (int i = 0; i < strs.length; i++) {
             strs[i] = i + "";
         }
@@ -39,11 +41,34 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         sl = $(R.id.sl);
         sl.setOnRefreshListener(this);
         myAdapter = new MyAdapter(this, strs);
-        rv.setLayoutManager(new GridLayoutManager(this, 4));
+        rv.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
         rv.setAdapter(myAdapter);
         helper = new ItemTouchHelper(new MyCallBack());
         helper.attachToRecyclerView(rv);
 
+    }
+
+    class MyDiffCallBack extends DiffUtil.Callback{
+
+        @Override
+        public int getOldListSize() {
+            return strs.length;
+        }
+
+        @Override
+        public int getNewListSize() {
+            return strs.length;
+        }
+
+        @Override
+        public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+            return false;
+        }
+
+        @Override
+        public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+            return false;
+        }
     }
 
     class MyCallBack extends ItemTouchHelper.Callback {
